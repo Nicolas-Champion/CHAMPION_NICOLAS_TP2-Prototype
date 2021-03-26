@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Baril : MonoBehaviour
 {
+    public float radius;
+    public float force;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +17,14 @@ public class Baril : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void Explode()
+    {
+        //Explosion
+        Explosion explosion = new Explosion(force, transform.position, radius, 0.5f);
+        //Détruire la bombe
+        Destroy(gameObject);
+
     }
 }
