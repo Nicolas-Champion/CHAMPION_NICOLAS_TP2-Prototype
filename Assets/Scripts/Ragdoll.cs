@@ -5,7 +5,7 @@ using UnityEngine;
 public class Ragdoll : MonoBehaviour
 {
     Rigidbody[] ragdollRbs;
-    Animator animatorVanguard;
+    Animator animatorPerso;
 
     bool isDead = false;
 
@@ -17,7 +17,7 @@ public class Ragdoll : MonoBehaviour
         //Lister tous les Rbs
         ragdollRbs = GetComponentsInChildren<Rigidbody>();
 
-        animatorVanguard = GetComponent<Animator>();
+        animatorPerso = GetComponent<Animator>();
         //Désactiver le ragdoll
         ToggleRagdoll(false);
     }
@@ -51,6 +51,6 @@ public class Ragdoll : MonoBehaviour
         }
 
         //Animator
-        animatorVanguard.enabled = !value;
+        animatorPerso.enabled = !value;
     }
 }
