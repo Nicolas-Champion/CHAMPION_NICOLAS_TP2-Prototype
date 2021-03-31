@@ -9,6 +9,7 @@ public class Arme : MonoBehaviour
 
     public float explosionRadius;
     public float explosionForce;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +19,7 @@ public class Arme : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //détection du click gauche
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();

@@ -7,12 +7,19 @@ public class RbCharacterMovements : MonoBehaviour
 {
     public float speed = 2f;
     public float jumpHeight = 1f;
+    public float speedWalking;
+    public float speedRunning;
 
     // Transform de la position des pieds
     public Transform feetPosition;
 
     private float inputVertical;
-    private float inputHorizontal;    
+    private float inputHorizontal;
+    private Animator animatorVanguard;
+    private float LerpPercent = 0.08f;
+    private float animationSpeed = 1f;
+    
+    bool isMoving;
 
     private Vector3 moveDirection;
 
@@ -33,6 +40,7 @@ public class RbCharacterMovements : MonoBehaviour
 
         // Geler la rotation physique
         rb.freezeRotation = true;
+        rb.isKinematic = false;
     }
 
     void Update()
@@ -53,8 +61,30 @@ public class RbCharacterMovements : MonoBehaviour
         Rotate();
 
         // Sauter
-        if (Input.GetButtonDown("Jump") && isGrounded)        
-            Jump();        
+        if (Input.GetButtonDown("Jump") && isGrounded)
+            Jump();
+
+
+        animatorVanguard.SetBool("IsMoving", isMoving);
+        //Animation  ------------------------------------
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            //Courir
+            animationSpeed = Mathf.Lerp(animationSpeed, 2f, LerpPercent);
+            speed = Mathf.Lerp(speed, speedRunning, LerpPercent);
+        }
+        else
+        {
+            animationSpeed = Mathf.Lerp(animationSpeed, 1f, LerpPercent);
+            speed = Mathf.Lerp(speed, speedWalking, LerpPercent);
+        }
+
+        animatorVanguard.SetFloat("Horizontal", inputHorizontal * animationSpeed);
+        animatorVanguard.SetFloat("Vertical", inputVertical * animationSpeed);
+        //-----------------------------------------------
+
+
+
     }
 
     void Rotate()
