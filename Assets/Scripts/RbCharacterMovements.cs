@@ -2,30 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class RbCharacterMovements : MonoBehaviour
 {
-    public float speed = 2f;
+    float speed = 0.1f;
     public float jumpHeight = 1f;
     public float speedWalking;
     public float speedRunning;
+
 
     // Transform de la position des pieds
     public Transform feetPosition;
 
     private float inputVertical;
     private float inputHorizontal;
-    private Animator animatorVanguard;
-    private float LerpPercent = 0.08f;
     private float animationSpeed = 1f;
-    
-    bool isMoving;
+    private float LerpPercent = 0.08f;
 
     private Vector3 moveDirection;
 
     private Rigidbody rb;
 
     private bool isGrounded = true;
+
+    private Animator animatorVanguard;
+
+    bool isMoving;
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        // Assigner le Rigidbody
+        rb = GetComponent<Rigidbody>();
+        animatorVanguard = GetComponent<Animator>();
+    }
 
     void Start()
     {
@@ -43,6 +52,7 @@ public class RbCharacterMovements : MonoBehaviour
         rb.isKinematic = false;
     }
 
+    // Update is called once per frame
     void Update()
     {
         // Vérifier si l'on touche le sol
@@ -54,16 +64,9 @@ public class RbCharacterMovements : MonoBehaviour
         // Horizontal (A, D et Joystick gauche/droite)
         inputHorizontal = Input.GetAxis("Horizontal");
 
-        // Vecteur de mouvements (Avant/arrière + Gauche/Droite)
-        moveDirection = transform.forward * inputVertical + transform.right * inputHorizontal;
+        //Vérifier deadzones
 
-        // Rotation du personnage
-        Rotate();
-
-        // Sauter
-        if (Input.GetButtonDown("Jump") && isGrounded)
-            Jump();
-
+        isMoving = Mathf.Abs(inputHorizontal) + Mathf.Abs(inputVertical) > 0f;
 
         animatorVanguard.SetBool("IsMoving", isMoving);
         //Animation  ------------------------------------
@@ -83,29 +86,27 @@ public class RbCharacterMovements : MonoBehaviour
         animatorVanguard.SetFloat("Vertical", inputVertical * animationSpeed);
         //-----------------------------------------------
 
+        // Vecteur de mouvements (Avant/arrière + Gauche/Droite)
+        moveDirection = transform.forward * inputVertical + transform.right * inputHorizontal;
 
+        // Sauter
+        if (Input.GetButtonDown("Jump") && isGrounded == true)
+        {
+            animatorVanguard.SetTrigger("Jump");
+            rb.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);
+            
+        }
 
-    }
-
-    void Rotate()
-    {
-        Vector3 rotPlayer = transform.rotation.eulerAngles;
-
-        // Le player tourne en fonction de la position de la souris (y seulement)
-        rotPlayer.y += Input.GetAxis("Mouse X");
-
-        // Appliquer la rotation rotPlayer dans la rotation du Transform (Quaternion)
-        transform.rotation = Quaternion.Euler(rotPlayer);
-    }
-
-    void Jump()
-    {
-        rb.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);
+        //Shoot
+        if (Input.GetMouseButtonDown(0))
+        {
+            animatorVanguard.SetTrigger("Shoot");
+        }
     }
 
     private void FixedUpdate()
     {
         // Déplacer le personnage selon le vecteur de direction
-        rb.MovePosition(rb.position + moveDirection * speed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + moveDirection.normalized * speed * Time.fixedDeltaTime);
     }
 }
