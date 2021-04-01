@@ -38,8 +38,7 @@ public class RbCharacterMovements : MonoBehaviour
 
     void Start()
     {
-        // Modifier le layer pour que l'objet puisse uniquement sauté quand il touche le sol (il ne sera plus sur le layer Default)
-        gameObject.layer = 3;
+        
 
         // Assigner le Rigidbody
         rb = GetComponent<Rigidbody>();
