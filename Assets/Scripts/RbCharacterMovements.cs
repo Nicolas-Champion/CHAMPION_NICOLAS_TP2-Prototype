@@ -8,6 +8,7 @@ public class RbCharacterMovements : MonoBehaviour
     public float jumpHeight = 1f;
     public float speedWalking;
     public float speedRunning;
+    public Transform head;
 
 
     // Transform de la position des pieds
@@ -101,8 +102,21 @@ public class RbCharacterMovements : MonoBehaviour
         {
             animatorVanguard.SetTrigger("Shoot");
         }
+        Rotate();
+
     }
 
+    //Permet à la caméra de bouger sur les côtés
+    void Rotate()
+    {
+        Vector3 rotPlayer = transform.rotation.eulerAngles;
+
+        // Le player tourne en fonction de la position de la souris (y seulement)
+        rotPlayer.y += Input.GetAxis("Mouse X");
+
+        // Appliquer la rotation rotPlayer dans la rotation du Transform (Quaternion)
+        transform.rotation = Quaternion.Euler(rotPlayer);
+    }
     private void FixedUpdate()
     {
         // Déplacer le personnage selon le vecteur de direction
