@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CamRotationer : MonoBehaviour
 {
-    public float lerpElasticity = 5f;    
+    public float lerpElasticity = 5f;
 
     // Pour empêcher la caméra de flippé si la souris va trop vers le haut/bas
     float xAxisClamp = 0f;
@@ -35,7 +35,7 @@ public class CamRotationer : MonoBehaviour
     }
 
     void FixedUpdate()
-    {        
+    {
         // Positionner la caméra en FixedUpdate, car le personnage bouge en FixedUpdate
         RepositionCamera();
     }
@@ -60,7 +60,8 @@ public class CamRotationer : MonoBehaviour
         {
             xAxisClamp = 90f;
             rotCam.x = 90f;
-        } else if (xAxisClamp < -90f)
+        }
+        else if (xAxisClamp < -90f)
         {
             xAxisClamp = -90f;
             rotCam.x = 270f;
