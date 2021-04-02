@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class Arme : MonoBehaviour
 {
+    Audio audio = new Audio();
+    AudioSource source;
     public Transform barrel;
     public LineRenderer bulletTrail;
 
     public float explosionRadius;
     public float explosionForce;
 
-    // Start is called before the first frame update
-    void Start()
+    
+    void Awake()
     {
-        
+        source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -23,6 +25,7 @@ public class Arme : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();
+            audio.AudioActivation(GetComponent<AudioSource>());
         }
     }
 

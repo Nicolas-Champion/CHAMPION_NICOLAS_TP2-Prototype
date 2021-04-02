@@ -8,6 +8,6 @@ public class Audio : MonoBehaviour
     //Lance un clip audio lorsqu'appelé
     public void AudioActivation(AudioSource audioSource)
     {
-        //audioSource.Play;
+        audioSource.Play();
     }
 }

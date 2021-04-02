@@ -7,11 +7,13 @@ public class Ennemy : MonoBehaviour
     
     public Transform eyes;
 
+
     Transform playerHead;
+    Rigidbody[] ragdollRbs;
 
     float speedWalking = 1f;
     float speedRunning = 2.5f;
-    float lastDetectionTime = -100f;
+    //float lastDetectionTime = -100f;
 
     UnityEngine.AI.NavMeshAgent navMeshAgent;
     AudioSource source;
@@ -23,6 +25,7 @@ public class Ennemy : MonoBehaviour
     {
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         source = GetComponent<AudioSource>();
+        ragdollRbs = GetComponentsInChildren<Rigidbody>();
 
     }
 
@@ -36,14 +39,19 @@ public class Ennemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isEnnemyBusy)
+
+        //Si le rigid body est désactivé, désactiver le navMeshAgent
+        foreach (Rigidbody rb in ragdollRbs)
+        {
+            if (!rb.isKinematic)
+                navMeshAgent.enabled = false;
+        }
+
+        if (!isEnnemyBusy && navMeshAgent.enabled)
             StartCoroutine(Patrol(GetRandomDest(), speedWalking));
 
-        //Arrestation?
-        if (Vector3.Distance(transform.position, playerHead.position) < 1f)
-        {
-            GameManager.singleton.GameOver();
-        }
+        
+
     }
 
     void DelayedUpdate()
@@ -66,15 +74,18 @@ public class Ennemy : MonoBehaviour
 
         navMeshAgent.speed = speed;
 
+        
         //Déplacement vers dest
         navMeshAgent.SetDestination(destination);
-
+        
         //Rien d'autre tant que pas arrivé à dest
-        while (navMeshAgent.pathPending || navMeshAgent.remainingDistance > 0.5)
+        if (navMeshAgent.enabled)
         {
-            yield return null;
+            while (navMeshAgent.pathPending || navMeshAgent.remainingDistance > 0.5)
+            {
+                yield return null;
+            }
         }
-
         //pause rendu à dest
         yield return new WaitForSeconds(Random.Range(3f, 6f));
 
@@ -90,7 +101,7 @@ public class Ennemy : MonoBehaviour
         //Créer un rayon
         RaycastHit hit;
         //S'il intersecte ou est obstrué par un collider autre que le personnage
-        if (Physics.Linecast(eyes.position, playerHead.position, out hit))
+        if (Physics.Linecast(eyes.position, playerHead.position, out hit) && navMeshAgent.enabled)
 
         {
             //Vérifier si c'est le joueur
@@ -100,12 +111,6 @@ public class Ennemy : MonoBehaviour
                 StopAllCoroutines();
                 StartCoroutine(Patrol(playerHead.position, speedRunning));
 
-                //SFX
-                if (Time.time > lastDetectionTime + 10f)
-                {
-                    source.Play();
-                    lastDetectionTime = Time.time;
-                }
             }
         }
     }

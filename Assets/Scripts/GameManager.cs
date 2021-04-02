@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour
 
     public RbCharacterMovements playerMovements;
     public Ennemy police;
-    public AudioSource source;
+    AudioSource source;
 
-    bool isGameOver;
+    public bool isGameOver;
 
     // Start is called before the first frame update
     void Awake()
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
             Instantiate(EnnemyPrefab, new Vector3(3f, 0.6f, 9f), EnnemyPrefab.transform.rotation);
     }
 
-    // Update is called once per frame
+    
     public void GameOver()
     {
         if (isGameOver)

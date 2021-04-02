@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class Ragdoll : MonoBehaviour
 {
+    Audio audio = new Audio();
+    GameManager gameManager = new GameManager();
     Rigidbody[] ragdollRbs;
     Animator animatorPerso;
+    AudioSource source;
+
 
     bool isDead = false;
 
@@ -17,7 +21,11 @@ public class Ragdoll : MonoBehaviour
         //Lister tous les Rbs
         ragdollRbs = GetComponentsInChildren<Rigidbody>();
 
+
+       
         animatorPerso = GetComponent<Animator>();
+        source = GetComponent<AudioSource>();
+
         //Désactiver le ragdoll
         ToggleRagdoll(false);
     }
@@ -37,8 +45,9 @@ public class Ragdoll : MonoBehaviour
         if (isDead)
             return;
         isDead = true;
-        
-        ToggleRagdoll(true);    
+        audio.AudioActivation(source);
+
+        ToggleRagdoll(true); 
     }
 
     void ToggleRagdoll(bool value)
@@ -52,5 +61,6 @@ public class Ragdoll : MonoBehaviour
 
         //Animator
         animatorPerso.enabled = !value;
+
     }
 }

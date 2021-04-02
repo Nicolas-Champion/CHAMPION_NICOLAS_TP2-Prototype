@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class Armes : MonoBehaviour
 {
+    Audio audio = new Audio();
+    AudioSource source;
     public Transform barrel;
     public float explosionRadius;
     public float explosionForce;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-
+        source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -21,6 +22,7 @@ public class Armes : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();
+            audio.AudioActivation(GetComponent<AudioSource>());
         }
     }
 
@@ -42,9 +44,4 @@ public class Armes : MonoBehaviour
         
     }
 
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.magenta;
-    //    Gizmos.DrawRay(barrel.position, barrel.forward * 50f);
-    //}
 }
