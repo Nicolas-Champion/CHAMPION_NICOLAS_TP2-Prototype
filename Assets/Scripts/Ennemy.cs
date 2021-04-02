@@ -13,19 +13,28 @@ public class Ennemy : MonoBehaviour
 
     float speedWalking = 1f;
     float speedRunning = 2.5f;
+    private float LerpPercent = 0.08f;
     //float lastDetectionTime = -100f;
 
     UnityEngine.AI.NavMeshAgent navMeshAgent;
     AudioSource source;
+
+    private Animator animatorVanguard;
+
+
 
     //L'ennemie est-il occupé? 
     bool isEnnemyBusy;
 
     void Awake()
     {
+        //Instanciation des components
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         source = GetComponent<AudioSource>();
         ragdollRbs = GetComponentsInChildren<Rigidbody>();
+
+        animatorVanguard = GetComponent<Animator>();
+
 
     }
 
@@ -50,8 +59,23 @@ public class Ennemy : MonoBehaviour
         if (!isEnnemyBusy && navMeshAgent.enabled)
             StartCoroutine(Patrol(GetRandomDest(), speedWalking));
 
+
+        RaycastHit hit;
+        if (Physics.Linecast(eyes.position, playerHead.position, out hit))
+        {
+            ShootingAnimation();
+        }
+
         
 
+
+
+    }
+
+    void ShootingAnimation()
+    {
+        
+        animatorVanguard.SetTrigger("Shoot");
     }
 
     void DelayedUpdate()
@@ -74,7 +98,7 @@ public class Ennemy : MonoBehaviour
 
         navMeshAgent.speed = speed;
 
-        
+        float animationSpeed = 1f;    
         //Déplacement vers dest
         navMeshAgent.SetDestination(destination);
         
@@ -93,7 +117,11 @@ public class Ennemy : MonoBehaviour
         //démarre une nouvelle patrouille
         isEnnemyBusy = false;
 
+        animationSpeed = Mathf.Lerp(animationSpeed, 1f, LerpPercent);
+        speed = Mathf.Lerp(speed, speedWalking, LerpPercent);
 
+        animatorVanguard.SetFloat("Horizontal", speed * animationSpeed);
+        animatorVanguard.SetFloat("Vertical", speed * animationSpeed);
     }
 
     void TryDetectPlayer()
@@ -110,6 +138,8 @@ public class Ennemy : MonoBehaviour
                 //Poursuite du joueur
                 StopAllCoroutines();
                 StartCoroutine(Patrol(playerHead.position, speedRunning));
+
+
 
             }
         }

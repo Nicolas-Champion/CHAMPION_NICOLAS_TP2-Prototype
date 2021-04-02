@@ -5,7 +5,6 @@ using UnityEngine;
 public class Ragdoll : MonoBehaviour
 {
     Audio audio = new Audio();
-    GameManager gameManager = new GameManager();
     Rigidbody[] ragdollRbs;
     Animator animatorPerso;
     AudioSource source;
@@ -47,7 +46,10 @@ public class Ragdoll : MonoBehaviour
         isDead = true;
         audio.AudioActivation(source);
 
-        ToggleRagdoll(true); 
+        ToggleRagdoll(true);
+
+        if (source.CompareTag("Player"))
+            GameManager.singleton.GameOver();
     }
 
     void ToggleRagdoll(bool value)

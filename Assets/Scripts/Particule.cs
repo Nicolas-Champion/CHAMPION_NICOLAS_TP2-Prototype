@@ -11,6 +11,8 @@ public class Particule : MonoBehaviour
     {
         particule.SetActive(false);
 
+
+        //Envoyer une delayed Update pour refermer le particle system
         InvokeRepeating("DelayedUpdate", 1f, 1f);
     }
 
@@ -23,7 +25,7 @@ public class Particule : MonoBehaviour
         }
         
     }
-
+    //Fermeture du particle system
     void DelayedUpdate()
     {
         particule.SetActive(false);

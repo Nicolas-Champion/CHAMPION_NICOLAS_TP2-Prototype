@@ -6,7 +6,7 @@ public class Baril : MonoBehaviour
 {
     public float radius;
     public float force;
-
+    public int PV = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +16,9 @@ public class Baril : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Si le baril a été touché par une balle il explose dans 3 secondes
+        if (PV < 1)
+            Invoke("Explode", 3f);
     }
 
     void Explode()

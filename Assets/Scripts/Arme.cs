@@ -8,6 +8,7 @@ public class Arme : MonoBehaviour
     AudioSource source;
     public Transform barrel;
     public LineRenderer bulletTrail;
+    public GameObject particule;
 
     public float explosionRadius;
     public float explosionForce;
@@ -16,6 +17,14 @@ public class Arme : MonoBehaviour
     void Awake()
     {
         source = GetComponent<AudioSource>();
+        particule.SetActive(false);
+
+    }
+
+    void Start()
+    {
+        //Envoyer une delayed Update pour refermer le particle system
+        InvokeRepeating("DelayedUpdate", 1f, 1f);
     }
 
     // Update is called once per frame
@@ -26,7 +35,10 @@ public class Arme : MonoBehaviour
         {
             Shoot();
             audio.AudioActivation(GetComponent<AudioSource>());
+
+            
         }
+        
     }
 
     void Shoot()
@@ -46,7 +58,12 @@ public class Arme : MonoBehaviour
 
             //mini-Explosion
             Explosion explosion = new Explosion(explosionForce, hit.point, explosionRadius, 0.5f);
-
+            
+            //Mettre la position des particules au point d'impact
+            particule.transform.position = hit.point;
+            
+            //Activer les particule pour avoir un burst
+            particule.SetActive(true);
         }
 
         else
@@ -54,11 +71,25 @@ public class Arme : MonoBehaviour
             //Bullet Trail (point B Raté)
             bulletTrail.SetPosition(1, barrel.position + barrel.forward * 50f);
         }
+
+        //Si le tag est celui de barrel, lui enlever un PV pour qu'il explose (pas trouvé comment)
+        //if (hit.collider.CompareTag("Barrel"))
+        //{
+           
+        //}
+
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawRay(barrel.position, barrel.forward * 50f);
+    }
+
+    //Fermeture du particle system
+    void DelayedUpdate()
+    {
+        particule.SetActive(false);
+        
     }
 }
