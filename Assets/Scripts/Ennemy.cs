@@ -14,7 +14,7 @@ public class Ennemy : MonoBehaviour
     float speedWalking = 1f;
     float speedRunning = 2.5f;
     private float LerpPercent = 0.08f;
-    //float lastDetectionTime = -100f;
+    float lastDetectionTime = -100f;
 
     UnityEngine.AI.NavMeshAgent navMeshAgent;
     AudioSource source;
@@ -63,7 +63,13 @@ public class Ennemy : MonoBehaviour
         RaycastHit hit;
         if (Physics.Linecast(eyes.position, playerHead.position, out hit))
         {
-            ShootingAnimation();
+            if (Time.time > lastDetectionTime + 10f)
+            {
+
+                ShootingAnimation();
+                lastDetectionTime = Time.time;
+
+            }
         }
 
         
@@ -117,11 +123,11 @@ public class Ennemy : MonoBehaviour
         //démarre une nouvelle patrouille
         isEnnemyBusy = false;
 
-        animationSpeed = Mathf.Lerp(animationSpeed, 1f, LerpPercent);
-        speed = Mathf.Lerp(speed, speedWalking, LerpPercent);
+        //animationSpeed = Mathf.Lerp(animationSpeed, 1f, LerpPercent);
+        //speed = Mathf.Lerp(speed, speedWalking, LerpPercent);
 
-        animatorVanguard.SetFloat("Horizontal", speed * animationSpeed);
-        animatorVanguard.SetFloat("Vertical", speed * animationSpeed);
+        animatorVanguard.SetFloat("Horizontal", 1);
+        
     }
 
     void TryDetectPlayer()
